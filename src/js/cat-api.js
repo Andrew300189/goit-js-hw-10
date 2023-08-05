@@ -1,4 +1,3 @@
-// cat-api.js
 import axios from 'axios';
 
 const API_KEY = 'live_7tei2nqce6ALMVJ73WZIoUzd4Fv3VN7LJovaUmdqQ85ok6WVozOfa3coc6ARxbKS';
