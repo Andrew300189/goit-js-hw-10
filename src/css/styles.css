@@ -14,14 +14,23 @@ body {
   display: none;
 }
 
+.cat-info {
+  display: flex;
+  position: relative;
+}
+
 .cat-image {
-  max-width: 33%;
+  max-width: 30%;
+  height: auto;
+  border-radius: 8px;
+  float: left;
 }
 
 .cat-details {
-  flex: 2;
-  text-align: left;
+  margin-left: 40%;
+  clear: left;
 }
+
 
 /* Стили на загрузчик */
 .loader {
