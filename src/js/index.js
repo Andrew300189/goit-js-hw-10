@@ -34,15 +34,15 @@ async function populateBreedSelect() {
 
     // Показываем селект и скрываем индикатор загрузки
     breedSelect.style.display = 'block';
-    loader.style.display = 'none';
+    hideLoader();
 
     // Скрываем индикатор загрузки после успешного получения списка пород
     Notiflix.Loading.remove();
   } catch (error) {
     // Если возникла ошибка при получении данных, скрываем селект и индикатор загрузки, показываем сообщение об ошибке
     breedSelect.style.display = 'none';
-    loader.style.display = 'none';
-    error.style.display = 'block';
+    hideLoader();
+    showError();
 
     // Показываем сообщение об ошибке с помощью Notiflix
     Notiflix.Notify.failure('Oops! Something went wrong! Try reloading the page!');
@@ -55,58 +55,82 @@ async function populateBreedSelect() {
 async function fetchAndDisplayCatInfo(breedId) {
   try {
     // Показываем индикатор загрузки при запросе информации о коте
-    Notiflix.Loading.standard('Loading data, please wait...');
+    showLoader();
 
     // Получаем данные о коте по выбранной породе с помощью функции fetchCatByBreed
     const catData = await fetchCatByBreed(breedId);
 
+    // Если массив данных о коте пустой, очищаем розметку и выводим сообщение
+    if (catData.length === 0) {
+      clearCatInfo();
+      showError();
+      return;
+    }
+
     // Формируем разметку для отображения информации о коте
-    catInfo.innerHTML = `
+    const catMarkup = `
       <img src="${catData.url}" alt="Кот" class="cat-image" />
       <div class="cat-details">
         <p class="cat-name">${catData.breeds[0].name}</p>
         <p class="cat-description">${catData.breeds[0].description}</p>
-        <p class="cat-temperament">Темперамент: ${catData.breeds[0].temperament}</p>
+        <p class="cat-temperament">Temperament: ${catData.breeds[0].temperament}</p>
       </div>
     `;
 
     // Показываем информацию о коте и скрываем сообщение об ошибке
-    catInfo.style.display = 'block';
-    error.style.display = 'none';
-
-    // Скрываем индикатор загрузки после успешного получения информации о коте
-    Notiflix.Loading.remove();
+    catInfo.innerHTML = catMarkup;
+    showCatInfo();
+    hideError();
   } catch (error) {
-    // Если возникла ошибка при получении данных о коте, скрываем информацию о коте и показываем сообщение об ошибке
-    catInfo.style.display = 'none';
-    error.style.display = 'block';
+    // Если возникла ошибка при получении данных о коте, показываем сообщение об ошибке
+    hideCatInfo();
+    showError();
 
     // Показываем сообщение об ошибке с помощью Notiflix
     Notiflix.Notify.failure('Oops! Something went wrong! Try reloading the page!');
-
-    // Скрываем индикатор загрузки в случае ошибки
-    Notiflix.Loading.remove();
+  } finally {
+    hideLoader();
   }
 }
 
-// Вспомогательная функция для скрытия элемента
-function hideElement(element) {
-  if (element) {
-    element.style.display = 'none';
-  }
+// Вспомогательная функция для очистки информации о коте
+function clearCatInfo() {
+  catInfo.innerHTML = '';
 }
 
-// Вспомогательная функция для отображения элемента
-function showElement(element) {
-  if (element) {
-    element.style.display = 'block';
-  }
+// Вспомогательная функция для отображения информации о коте
+function showCatInfo() {
+  catInfo.style.display = 'block';
 }
 
-// Изначально скрываем селект, информацию о коте и сообщение об ошибке
-hideElement(breedSelect);
-hideElement(catInfo);
-hideElement(error);
+// Вспомогательная функция для скрытия информации о коте
+function hideCatInfo() {
+  catInfo.style.display = 'none';
+}
+
+// Вспомогательная функция для отображения сообщения об ошибке
+function showError() {
+  error.style.display = 'block';
+}
+
+// Вспомогательная функция для скрытия сообщения об ошибке
+function hideError() {
+  error.style.display = 'none';
+}
+
+// Вспомогательная функция для отображения индикатора загрузки
+function showLoader() {
+  loader.style.display = 'block';
+}
+
+// Вспомогательная функция для скрытия индикатора загрузки
+function hideLoader() {
+  loader.style.display = 'none';
+}
+
+// Изначально скрываем информацию о коте и сообщение об ошибке
+hideCatInfo();
+hideError();
 
 // Заполняем выпадающий список с помощью функции populateBreedSelect
 populateBreedSelect();
